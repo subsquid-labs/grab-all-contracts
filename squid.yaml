@@ -1,7 +1,7 @@
 manifestVersion: subsquid.io/v0.1
-name: grab-all-contracts
+name: grab-all-contract-addresses
 version: 1
-description: 'The very first evm squid from manifest  '
+description: 'Squid that grabs all contract addresses ever deployed on Ethereum'
 build: 
 deploy:
   addons:
