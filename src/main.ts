@@ -3,12 +3,13 @@ import {CreatedContract} from './model'
 import {processor} from './processor'
 
 processor.run(new TypeormDatabase({supportHotBlocks: false}), async (ctx) => {
-    const contracts: CreatedContract[] = []
+    const contracts: Map<string, CreatedContract> = new Map()
     const addresses: Set<string> = new Set()
     for (let c of ctx.blocks) {
         for (let trc of c.traces) {
             if (trc.type === 'create' && trc.result?.address != null && trc.transaction?.hash !== undefined) {
-                contracts.push(
+                contracts.set(trc.result.address, new CreatedContract({id: trc.result.address})
+/*
                     new CreatedContract({
                         id: `${trc.transaction.hash}-${trc.result.address}-${trc.transactionIndex}-${c.header.height}`,
                         block: c.header.height,
@@ -17,9 +18,11 @@ processor.run(new TypeormDatabase({supportHotBlocks: false}), async (ctx) => {
 //                        code: trc.result.code,
                         txHash: trc.transaction.hash,
                     })
+*/
                 )
             }
         }
     }
-    await ctx.store.insert(contracts)
+//    await ctx.store.insert(contracts)
+    await ctx.store.upsert([...contracts.values()])
 })
