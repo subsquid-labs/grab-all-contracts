@@ -7,15 +7,15 @@ processor.run(new TypeormDatabase({supportHotBlocks: false}), async (ctx) => {
     const addresses: Set<string> = new Set()
     for (let c of ctx.blocks) {
         for (let trc of c.traces) {
-            if (trc.type === 'create' && trc.result?.address != null) {
+            if (trc.type === 'create' && trc.result?.address != null && trc.transaction?.hash !== undefined) {
                 contracts.push(
                     new CreatedContract({
-                        id: `${trc.result.address}-${trc.transactionIndex}-${c.header.height}`,
+                        id: `${trc.transaction.hash}-${trc.result.address}-${trc.transactionIndex}-${c.header.height}`,
                         block: c.header.height,
                         timestamp: new Date(c.header.timestamp),
                         address: trc.result.address,
 //                        code: trc.result.code,
-                        txHash: trc.transaction?.hash,
+                        txHash: trc.transaction.hash,
                     })
                 )
             }
